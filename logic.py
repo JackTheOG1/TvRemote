@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QMainWindow, QMessageBox, QGraphicsScene
+from PyQt6.QtWidgets import QMainWindow, QGraphicsScene
 from PyQt6.QtGui import QPixmap
 from gui import Ui_MainWindow
 from television import Television
@@ -98,30 +98,32 @@ class TVFunc(QMainWindow):
         allows the ui to be updated by your inputs
         :return:
         """
-        if self.tv.is_on():
-            self.ui.powerButton.setChecked(True)
+        try:
+            if self.tv.is_on():
+                self.ui.powerButton.setChecked(True)
 
-            channel = self.tv.get_channel()
-            channel_text = self.channels[channel]
+                channel = self.tv.get_channel()
+                channel_text = self.channels[channel]
 
-            self.ui.tvChannel.setStyleSheet("background-color: black; color: white; font-size: 20px;")
-            scene = self.ui.tvChannel.scene() or self.create_scene()
-            scene.clear()
-            scene.addText(channel_text)
+                self.ui.tvChannel.setStyleSheet("background-color: black; color: white; font-size: 20px;")
+                scene = self.ui.tvChannel.scene() or self.create_scene()
+                scene.clear()
+                scene.addText(channel_text)
 
 
 
-            image_path = f"images/channel_{channel}.png"
+                image_path = f"images/channel_{channel}.png"
 
-            pixmap = QPixmap(image_path)
-            scene.addPixmap(pixmap.scaled(self.ui.tvChannel.width(), self.ui.tvChannel.height()))
+                pixmap = QPixmap(image_path)
+                scene.addPixmap(pixmap.scaled(self.ui.tvChannel.width(), self.ui.tvChannel.height()))
 
-            vol = 0 if self.tv.is_muted() else self.tv.get_volume()
-            self.ui.volumeBar.setValue(vol * 50)
-        else:
-            self.ui.tvChannel.setScene(None)
-            self.ui.volumeBar.setValue(0)
-
+                vol = 0 if self.tv.is_muted() else self.tv.get_volume()
+                self.ui.volumeBar.setValue(vol * 50)
+            else:
+                self.ui.tvChannel.setScene(None)
+                self.ui.volumeBar.setValue(0)
+        except Exception:
+            raise
     def create_scene(self):
 
         scene = QGraphicsScene()
